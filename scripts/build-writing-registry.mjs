@@ -8,36 +8,28 @@
 // never hand-edit it; the `version` script runs it so name + version stay in
 // lockstep with package.json (the lesson of the registry packaging fix). The
 // ledger.json (external placements) is a separate record, not built here.
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { dirname, join, relative } from "node:path";
+import { dirname, join } from "node:path";
+import { collectResults } from "./writing.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-const writingDir = join(root, "writing");
 
-const dirs = (d) =>
-  readdirSync(d)
-    .filter((n) => statSync(join(d, n)).isDirectory())
-    .sort();
-
-const writing = [];
-if (existsSync(writingDir)) {
-  for (const house of dirs(writingDir)) {
-    for (const play of dirs(join(writingDir, house))) {
-      const playDir = join(writingDir, house, play);
-      for (const file of readdirSync(playDir).sort()) {
-        if (!file.endsWith(".md")) continue;
-        writing.push({
-          house,
-          play,
-          result: file.replace(/\.md$/, ""),
-          path: relative(root, join(playDir, file)).split("\\").join("/"),
-        });
-      }
-    }
-  }
-}
+// Surface the front-of-house metadata a consumer needs to render the catalogue
+// without opening every file; the body (the told story) stays in the file.
+const writing = collectResults(root).map(({ house, play, result, path, frontmatter: fm }) => ({
+  house,
+  play,
+  result,
+  path,
+  title: fm.title ?? null,
+  blurb: fm.blurb ?? null,
+  language: fm.language ?? null,
+  created: fm.created ?? null,
+  contentWarnings: Array.isArray(fm.contentWarnings) ? fm.contentWarnings : [],
+  routing: fm.routing ?? null,
+}));
 
 const registry = {
   $schema: "http://json-schema.org/draft-07/schema#",

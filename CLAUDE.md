@@ -17,6 +17,56 @@ voice is the **Metroon**, the archive that kept the authoritative play-texts.
   Grimoire post-ids and their state).
 - The rest is the wiring and the gates.
 
+## The writing (the Standard)
+
+A **result** is one rendered performance of one play — the told story a Director
+makes from a score — deposited venue-neutral. The layout is the contract:
+
+```
+writing/<house>/<play>/<result>.md
+```
+
+- `<house>` — the house slug, as in the chain registry.
+- `<play>` — the play id, exactly as in that house's `registry.json`.
+- `<result>` — the telling's slug. **One canonical telling per play**, named for
+  the play (`writing/grimm/aschenputtel/aschenputtel.md`); an alternate telling
+  takes its own slug.
+
+Each result is the **Standard** (venue-neutral). The Archive's Roadie composes the
+per-Venue **Adaption** at ship time; Adaptions are computed, never stored. Git
+history is the revision record (no version field) — a genuinely different telling
+is a new result file, not a revision.
+
+Frontmatter (all required unless marked optional):
+
+| field             | meaning                                                        |
+| ----------------- | -------------------------------------------------------------- |
+| `khai: writing`   | the kind                                                       |
+| `title`           | front-of-house title of the telling                            |
+| `house`           | house slug; must equal the `<house>` path segment              |
+| `play`            | source play id; must equal `<play>`; resolves in the registry  |
+| `source`          | provenance: `khai-plays-<house>/plays/<play>`                  |
+| `director`        | the house Director persona who rendered it                     |
+| `language`        | the told story's language — the **author's choice per result** |
+| `license`         | `CC-BY-NC-SA-4.0`                                              |
+| `created`         | first-deposit date (git carries revisions after)               |
+| `blurb`           | front-of-house one-liner                                       |
+| `contentWarnings` | list; optional                                                 |
+| `routing`         | routing intent (the Director's taste); optional                |
+
+The body is the told story in the chosen voice, mechanics spent not shown, ending
+with the **licence block** that credits the public-domain source.
+
+**Provenance gate.** Conformance checks structure — the path matches the
+frontmatter `house`/`play`, the required fields are present, the licence block is
+there. CI additionally resolves `play` against the house's shipped `registry.json`
+(every house ships it), so a result naming a play that does not exist fails.
+
+**Discovery.** `registry.json` (`writing[]`, built) surfaces each result's
+`house, play, result, path, title, blurb, language, created, contentWarnings,
+routing`, so npm-pull consumers (the website) render the catalogue without reading
+every file.
+
 ## Two distribution paths
 
 - **Pull** — `@chbrain/khai-writing` is `npm install`-ed and rendered like
