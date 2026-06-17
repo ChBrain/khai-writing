@@ -1,0 +1,50 @@
+{
+  "name": "@chbrain/khai-writing",
+  "version": "0.1.0",
+  "description": "khai-writing: the chain's writing archive (the Metroon) — the writing the plays produced and the provenance of where each result has been published.",
+  "type": "module",
+  "exports": {
+    ".": "./package.json",
+    "./package.json": "./package.json",
+    "./registry.json": "./registry.json",
+    "./ledger.json": "./ledger.json"
+  },
+  "license": "SEE LICENSE IN LICENSE and LICENSE-CODE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChBrain/khai-writing.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
+  "files": [
+    "writing/**",
+    "registry.json",
+    "ledger.json",
+    "README.md",
+    "LICENSE",
+    "LICENSE-CODE"
+  ],
+  "khai": {
+    "engine": "writing",
+    "card": {
+      "wire": "The chain's writing archive: rendered results and the publication ledger, consumable as a package."
+    }
+  },
+  "scripts": {
+    "test": "vitest run",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "registry:build": "node scripts/build-writing-registry.mjs",
+    "version": "changeset version && node scripts/build-writing-registry.mjs",
+    "release": "changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.8",
+    "@chbrain/khai-guard": "^0.1.0",
+    "vitest": "^4.1.8",
+    "prettier": "^3.3.0",
+    "husky": "^9.1.0"
+  }
+}

@@ -1,0 +1,15 @@
+khai content license
+
+The writing in this repository (the rendered results in `writing/`, and the prose
+within them) is licensed under the Creative Commons
+Attribution-NonCommercial-ShareAlike 4.0 International License (CC-BY-NC-SA-4.0):
+
+  https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+The architecture and the component shapes are original work. The concepts are
+NonCommercial: the architecture is not to be resold. Source material the writing
+builds on (the play each result renders, credited to its public-domain author) is
+credited where it is in the public domain or otherwise licensed, and keeps its
+own terms.
+
+Code in this repository is under LICENSE-CODE (MIT).
