@@ -2,31 +2,14 @@ import { describe, it, expect } from "vitest";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { collectResults, REQUIRED_FIELDS } from "../scripts/writing.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p) => readFileSync(join(root, p), "utf8");
-
-// Every deposited result: writing/<house>/<play>/<result>.md (paths relative to root).
-function results() {
-  const dir = join(root, "writing");
-  const out = [];
-  if (!existsSync(dir)) return out;
-  const walk = (d) => {
-    for (const e of readdirSync(d, { withFileTypes: true })) {
-      const full = join(d, e.name);
-      if (e.isDirectory()) walk(full);
-      else if (e.name.endsWith(".md"))
-        out.push(
-          full
-            .slice(root.length + 1)
-            .split("\\")
-            .join("/"),
-        );
-    }
-  };
-  walk(dir);
-  return out.sort();
-}
+const resultPaths = () =>
+  collectResults(root)
+    .map((r) => r.path)
+    .sort();
 
 // Tracked text files, for the committed-secret scan (skips deps and git).
 function textFiles() {
@@ -84,11 +67,74 @@ describe("khai-writing: the Writing Archive conforms", () => {
 
   it("the index enumerates exactly the deposited results", () => {
     const reg = JSON.parse(read("registry.json"));
-    expect(reg.writing.map((w) => w.path).sort()).toEqual(results());
+    expect(reg.writing.map((w) => w.path).sort()).toEqual(resultPaths());
+  });
+
+  it("every deposited result conforms to the Standard schema", () => {
+    const errors = [];
+    for (const r of collectResults(root)) {
+      const fm = r.frontmatter;
+      // [house, play] segments come from the path; the layout is
+      // writing/<house>/<play>/<result>.md.
+      for (const f of REQUIRED_FIELDS) {
+        if (fm[f] === undefined || fm[f] === "")
+          errors.push(`${r.path}: missing frontmatter "${f}"`);
+      }
+      if (fm.khai !== "writing") errors.push(`${r.path}: frontmatter "khai" must be "writing"`);
+      if (fm.house !== r.house)
+        errors.push(`${r.path}: frontmatter house "${fm.house}" != path "${r.house}"`);
+      if (fm.play !== r.play)
+        errors.push(`${r.path}: frontmatter play "${fm.play}" != path "${r.play}"`);
+      if (!/^[a-z0-9-]+$/.test(r.house)) errors.push(`${r.path}: house "${r.house}" is not a slug`);
+      if (fm.license && !/CC-BY-NC-SA/.test(String(fm.license)))
+        errors.push(`${r.path}: license must be CC-BY-NC-SA`);
+      if (!/CC-BY-NC-SA/.test(r.text)) errors.push(`${r.path}: missing the licence block`);
+    }
+    expect(errors).toEqual([]);
+  });
+
+  it("the index surfaces each result's front-of-house (title, blurb, language)", () => {
+    const reg = JSON.parse(read("registry.json"));
+    const byPath = new Map(reg.writing.map((w) => [w.path, w]));
+    const errors = [];
+    for (const r of collectResults(root)) {
+      const idx = byPath.get(r.path);
+      if (!idx) {
+        errors.push(`${r.path}: not in the index`);
+        continue;
+      }
+      for (const f of ["title", "blurb", "language"]) {
+        if (idx[f] !== (r.frontmatter[f] ?? null))
+          errors.push(`${r.path}: index ${f} out of sync with frontmatter`);
+      }
+    }
+    expect(errors).toEqual([]);
+  });
+
+  it("every result's play resolves in its house registry (deep check, when the house package is present)", () => {
+    const errors = [];
+    for (const r of collectResults(root)) {
+      const regPath = join(
+        root,
+        "node_modules",
+        "@chbrain",
+        `khai-plays-${r.house}`,
+        "registry.json",
+      );
+      // The deep resolution runs where the house package is installed (CI, once a
+      // result exists); it is skipped, not relaxed, when the package is absent.
+      if (!existsSync(regPath)) continue;
+      const ids = (JSON.parse(readFileSync(regPath, "utf8")).plays || []).map((p) => p.id);
+      if (!ids.includes(r.play))
+        errors.push(`${r.path}: play "${r.play}" not in the ${r.house} registry`);
+    }
+    expect(errors).toEqual([]);
   });
 
   it("every deposited result carries its licence block", () => {
-    const missing = results().filter((p) => !/CC-BY-NC-SA/.test(read(p)));
+    const missing = collectResults(root)
+      .filter((r) => !/CC-BY-NC-SA/.test(r.text))
+      .map((r) => r.path);
     expect(missing).toEqual([]);
   });
 
