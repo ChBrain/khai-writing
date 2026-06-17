@@ -2,5 +2,18 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "name": "@chbrain/khai-writing",
   "version": "0.1.0",
-  "writing": []
+  "writing": [
+    {
+      "house": "grimm",
+      "play": "001_the_frog_king",
+      "result": "001_the_frog_king",
+      "path": "writing/grimm/001_the_frog_king/001_the_frog_king.md",
+      "title": "Der Froschkönig oder der eiserne Heinrich",
+      "blurb": "Eine Koenigstochter verliert ihre goldene Kugel im Brunnen und gibt einem Frosch ein Versprechen, das der Koenig sie zu halten zwingt.",
+      "language": "de",
+      "created": "2026-06-17",
+      "contentWarnings": [],
+      "routing": "maerchen"
+    }
+  ]
 }
