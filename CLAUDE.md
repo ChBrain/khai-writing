@@ -7,8 +7,8 @@ voice is the **Metroon**, the archive that kept the authoritative play-texts.
 
 ## What lives here
 
-- `writing/<house>/<play>/<result>.md` — rendered results, each a **venue-neutral
-  performance** (the Standard). Git history is the revision record.
+- `writing/<house>/<play>/<result>.md` — captured runs, each a **venue-neutral
+  production** (the Standard). Git history is the revision record.
 - `registry.json` — the **discovery index** (what writing exists). **Built, never
   hand-edited** (`npm run registry:build`, run by the `version` script); it ships
   (`files`) and is exported (`exports`) so npm-pull consumers enumerate the
@@ -83,8 +83,8 @@ every file.
 ## The boundary
 
 A house's responsibility ends at **deposit**. Houses produce and deposit; this
-engine keeps, catalogues, ships, and tracks. The **Director** authors and
-deposits but is a _house_ position — not cast here. Here the **Archivist
+engine keeps, catalogues, ships, and tracks. The **Director** runs the production
+and deposits captured runs but is a _house_ position — not cast here. Here the **Archivist
 (Callimachus)** keeps results and holds the ledger; the **Archive's Roadie** ships
 and records.
 
