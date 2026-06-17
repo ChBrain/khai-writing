@@ -19,8 +19,10 @@ voice is the **Metroon**, the archive that kept the authoritative play-texts.
 
 ## The writing (the Standard)
 
-A **result** is one rendered performance of one play — the told story a Director
-makes from a score — deposited venue-neutral. The layout is the contract:
+A **result** is a **captured production**: one run of a play, made flesh by a
+Director and deposited venue-neutral. The Director does not write a story; the
+Director runs the play as a **living production** (a control loop over its board)
+and **captures** a chosen run here. The layout is the contract:
 
 ```
 writing/<house>/<play>/<result>.md
@@ -28,34 +30,37 @@ writing/<house>/<play>/<result>.md
 
 - `<house>` — the house slug, as in the chain registry.
 - `<play>` — the play id, exactly as in that house's `registry.json`.
-- `<result>` — the telling's slug. **One canonical telling per play**, named for
-  the play (`writing/grimm/aschenputtel/aschenputtel.md`); an alternate telling
-  takes its own slug.
+- `<result>` — the **reading's** slug. A play may hold **one or more captured
+  runs**, each a distinct reading (variation is native to directing): name the
+  canonical run for the play (`writing/grimm/aschenputtel/aschenputtel.md`); an
+  alternate reading takes its own slug (`..._oberlin-as-cage.md`).
 
 Each result is the **Standard** (venue-neutral). The Archive's Roadie composes the
 per-Venue **Adaption** at ship time; Adaptions are computed, never stored. Git
-history is the revision record (no version field) — a genuinely different telling
-is a new result file, not a revision.
+history is the revision record (no version field): re-capturing the same reading
+is a revision; a **different reading** is a new result file.
 
 Frontmatter (all required unless marked optional):
 
-| field             | meaning                                                        |
-| ----------------- | -------------------------------------------------------------- |
-| `khai: writing`   | the kind                                                       |
-| `title`           | front-of-house title of the telling                            |
-| `house`           | house slug; must equal the `<house>` path segment              |
-| `play`            | source play id; must equal `<play>`; resolves in the registry  |
-| `source`          | provenance: `khai-plays-<house>/plays/<play>`                  |
-| `director`        | the house Director persona who rendered it                     |
-| `language`        | the told story's language — the **author's choice per result** |
-| `license`         | `CC-BY-NC-SA-4.0`                                              |
-| `created`         | first-deposit date (git carries revisions after)               |
-| `blurb`           | front-of-house one-liner                                       |
-| `contentWarnings` | list; optional                                                 |
-| `routing`         | routing intent (the Director's taste); optional                |
+| field             | meaning                                                       |
+| ----------------- | ------------------------------------------------------------- |
+| `khai: writing`   | the kind                                                      |
+| `title`           | front-of-house title of the run                               |
+| `house`           | house slug; must equal the `<house>` path segment             |
+| `play`            | source play id; must equal `<play>`; resolves in the registry |
+| `source`          | provenance: `khai-plays-<house>/plays/<play>`                 |
+| `director`        | the house Director persona who ran it                         |
+| `language`        | the run's language; the **author's choice per result**        |
+| `reading`         | the directorial reading captured (what was moved); optional   |
+| `license`         | `CC-BY-NC-SA-4.0`                                             |
+| `created`         | first-deposit date (git carries revisions after)              |
+| `blurb`           | front-of-house one-liner                                      |
+| `contentWarnings` | list; optional                                                |
+| `routing`         | routing intent (the Director's taste); optional               |
 
-The body is the told story in the chosen voice, mechanics spent not shown, ending
-with the **licence block** that credits the public-domain source.
+The body is the **captured run** in the chosen voice, the production as it played,
+mechanics spent not shown, ending with the **licence block** that credits the
+public-domain source.
 
 **Provenance gate.** Conformance checks structure — the path matches the
 frontmatter `house`/`play`, the required fields are present, the licence block is
