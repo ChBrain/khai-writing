@@ -48,6 +48,13 @@ function textFiles() {
   return out;
 }
 
+// Management files of a given kind ("position" | "persona"), if management/ exists.
+function mgmt(kind) {
+  const dir = join(root, "management");
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir).filter((f) => f.startsWith(`${kind}_`) && f.endsWith(".md"));
+}
+
 describe("khai-writing: the Writing Archive conforms", () => {
   it("the Estate (README) names the Metroon", () => {
     expect(read("README.md")).toMatch(/Metroon/);
@@ -91,5 +98,27 @@ describe("khai-writing: the Writing Archive conforms", () => {
       (f) => !f.endsWith("archive.test.mjs") && re.test(readFileSync(f, "utf8")),
     );
     expect(offenders).toEqual([]);
+  });
+
+  it("the management cast conforms: every position is cast, every persona links a real position", () => {
+    const positions = mgmt("position");
+    const personas = mgmt("persona");
+    // Each persona's Taxonomy links a position_*.md that exists.
+    const linkOf = (p) =>
+      (read(join("management", p)).match(/\(position_[a-z0-9_-]+\.md\)/) || [])[0];
+    const danglingPersona = personas.filter((p) => {
+      const m = linkOf(p);
+      return !m || !existsSync(join(root, "management", m.slice(1, -1)));
+    });
+    expect(danglingPersona).toEqual([]);
+    // Each position is cast by at least one persona.
+    const referenced = new Set(
+      personas
+        .map((p) => linkOf(p))
+        .filter(Boolean)
+        .map((m) => m.slice(1, -1)),
+    );
+    const uncast = positions.filter((pos) => !referenced.has(pos));
+    expect(uncast).toEqual([]);
   });
 });
