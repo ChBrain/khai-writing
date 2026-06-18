@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "name": "@chbrain/khai-writing",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "writing": []
 }
