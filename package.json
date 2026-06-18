@@ -1,6 +1,6 @@
 {
   "name": "@chbrain/khai-writing",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "khai-writing: the chain's writing archive (the Metroon) — the writing the plays produced and the provenance of where each result has been published.",
   "type": "module",
   "exports": {
