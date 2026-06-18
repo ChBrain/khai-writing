@@ -13,6 +13,7 @@ export const REQUIRED_FIELDS = [
   "play",
   "source",
   "director",
+  "cast",
   "language",
   "license",
   "created",

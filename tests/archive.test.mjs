@@ -93,7 +93,7 @@ describe("khai-writing: the Writing Archive conforms", () => {
     expect(errors).toEqual([]);
   });
 
-  it("the index surfaces each result's front-of-house (title, blurb, language)", () => {
+  it("the index surfaces each result's front-of-house (title, blurb, director, cast, language)", () => {
     const reg = JSON.parse(read("registry.json"));
     const byPath = new Map(reg.writing.map((w) => [w.path, w]));
     const errors = [];
@@ -103,7 +103,7 @@ describe("khai-writing: the Writing Archive conforms", () => {
         errors.push(`${r.path}: not in the index`);
         continue;
       }
-      for (const f of ["title", "blurb", "language"]) {
+      for (const f of ["title", "blurb", "director", "cast", "language"]) {
         if (idx[f] !== (r.frontmatter[f] ?? null))
           errors.push(`${r.path}: index ${f} out of sync with frontmatter`);
       }

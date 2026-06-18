@@ -25,6 +25,8 @@ const writing = collectResults(root).map(({ house, play, result, path, frontmatt
   path,
   title: fm.title ?? null,
   blurb: fm.blurb ?? null,
+  director: fm.director ?? null,
+  cast: fm.cast ?? null,
   language: fm.language ?? null,
   created: fm.created ?? null,
   contentWarnings: Array.isArray(fm.contentWarnings) ? fm.contentWarnings : [],
