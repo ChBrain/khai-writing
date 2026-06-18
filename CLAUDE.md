@@ -19,10 +19,14 @@ voice is the **Metroon**, the archive that kept the authoritative play-texts.
 
 ## The writing (the Standard)
 
-A **result** is a **captured production**: one run of a play, made flesh by a
-Director and deposited venue-neutral. The Director does not write a story; the
-Director runs the play as a **living production** (a control loop over its board)
-and **captures** a chosen run here. The layout is the contract:
+A **result** is a **captured production**: one run of a play, **performed by the
+cast** and **run, selected, and captured by the Director**, deposited
+venue-neutral. The **cast** (the play's figures embodied) is the **producer**: the
+captured run is its performance. The **Director** is the **hand** that runs the
+living production (a control loop over the board), steers, selects, and captures;
+the Director does **not author** the run. That separation is what makes a result
+trustworthy as the cast's work and not the Director's invention. The layout is the
+contract:
 
 ```
 writing/<house>/<play>/<result>.md
@@ -42,25 +46,27 @@ is a revision; a **different reading** is a new result file.
 
 Frontmatter (all required unless marked optional):
 
-| field             | meaning                                                       |
-| ----------------- | ------------------------------------------------------------- |
-| `khai: writing`   | the kind                                                      |
-| `title`           | front-of-house title of the run                               |
-| `house`           | house slug; must equal the `<house>` path segment             |
-| `play`            | source play id; must equal `<play>`; resolves in the registry |
-| `source`          | provenance: `khai-plays-<house>/plays/<play>`                 |
-| `director`        | the house Director persona who ran it                         |
-| `language`        | the run's language; the **author's choice per result**        |
-| `reading`         | the directorial reading captured (what was moved); optional   |
-| `license`         | `CC-BY-NC-SA-4.0`                                             |
-| `created`         | first-deposit date (git carries revisions after)              |
-| `blurb`           | front-of-house one-liner                                      |
-| `contentWarnings` | list; optional                                                |
-| `routing`         | routing intent (the Director's taste); optional               |
+| field             | meaning                                                                                                                                                                |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `khai: writing`   | the kind                                                                                                                                                               |
+| `title`           | front-of-house title of the run                                                                                                                                        |
+| `house`           | house slug; must equal the `<house>` path segment                                                                                                                      |
+| `play`            | source play id; must equal `<play>`; resolves in the registry                                                                                                          |
+| `source`          | provenance: `khai-plays-<house>/plays/<play>`                                                                                                                          |
+| `director`        | the house Director persona who **ran, selected, and captured** the run (the hand; does not author it)                                                                  |
+| `cast`            | the cast that performed the run (the **producer**): the play's figures embodied; note the configuration if it bears on the reading (e.g. a persistent or a fresh cast) |
+| `language`        | the run's language; the **author's choice per result**                                                                                                                 |
+| `reading`         | the directorial reading captured (what was moved); optional                                                                                                            |
+| `license`         | `CC-BY-NC-SA-4.0`                                                                                                                                                      |
+| `created`         | first-deposit date (git carries revisions after)                                                                                                                       |
+| `blurb`           | front-of-house one-liner                                                                                                                                               |
+| `contentWarnings` | list; optional                                                                                                                                                         |
+| `routing`         | routing intent (the Director's taste); optional                                                                                                                        |
 
-The body is the **captured run** in the chosen voice, the production as it played,
-mechanics spent not shown, ending with the **licence block** that credits the
-public-domain source.
+The body is the **captured run** in the chosen voice — the cast's performance as it
+played, run and staged by the Director — mechanics spent not shown, ending with the
+**licence block** that credits the public-domain source (the production is claimed
+over a source in the public domain, never the source itself).
 
 **Provenance gate.** Conformance checks structure — the path matches the
 frontmatter `house`/`play`, the required fields are present, the licence block is
@@ -68,9 +74,9 @@ there. CI additionally resolves `play` against the house's shipped `registry.jso
 (every house ships it), so a result naming a play that does not exist fails.
 
 **Discovery.** `registry.json` (`writing[]`, built) surfaces each result's
-`house, play, result, path, title, blurb, language, created, contentWarnings,
-routing`, so npm-pull consumers (the website) render the catalogue without reading
-every file.
+`house, play, result, path, title, blurb, director, cast, language, created,
+contentWarnings, routing`, so npm-pull consumers (the website) render the catalogue
+(including who directed and the cast that performed) without reading every file.
 
 ## Two distribution paths
 
@@ -84,7 +90,9 @@ every file.
 
 A house's responsibility ends at **deposit**. Houses produce and deposit; this
 engine keeps, catalogues, ships, and tracks. The **Director** runs the production
-and deposits captured runs but is a _house_ position — not cast here. Here the **Archivist
+and deposits captured runs but is a _house_ position — not cast here. The **cast**
+is the producer of each run, named in the result (`cast`) and **ephemeral per
+production** — not a standing position here either. Here the **Archivist
 (Callimachus)** keeps results and holds the ledger; the **Archive's Roadie** ships
 and records.
 
