@@ -46,22 +46,22 @@ is a revision; a **different reading** is a new result file.
 
 Frontmatter (all required unless marked optional):
 
-| field             | meaning                                                       |
-| ----------------- | ------------------------------------------------------------- |
-| `khai: writing`   | the kind                                                      |
-| `title`           | front-of-house title of the run                               |
-| `house`           | house slug; must equal the `<house>` path segment             |
-| `play`            | source play id; must equal `<play>`; resolves in the registry |
-| `source`          | provenance: `khai-plays-<house>/plays/<play>`                 |
-| `director`        | the house Director persona who **ran, selected, and captured** the run (the hand; does not author it) |
+| field             | meaning                                                                                                                                                                |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `khai: writing`   | the kind                                                                                                                                                               |
+| `title`           | front-of-house title of the run                                                                                                                                        |
+| `house`           | house slug; must equal the `<house>` path segment                                                                                                                      |
+| `play`            | source play id; must equal `<play>`; resolves in the registry                                                                                                          |
+| `source`          | provenance: `khai-plays-<house>/plays/<play>`                                                                                                                          |
+| `director`        | the house Director persona who **ran, selected, and captured** the run (the hand; does not author it)                                                                  |
 | `cast`            | the cast that performed the run (the **producer**): the play's figures embodied; note the configuration if it bears on the reading (e.g. a persistent or a fresh cast) |
-| `language`        | the run's language; the **author's choice per result**        |
-| `reading`         | the directorial reading captured (what was moved); optional   |
-| `license`         | `CC-BY-NC-SA-4.0`                                             |
-| `created`         | first-deposit date (git carries revisions after)              |
-| `blurb`           | front-of-house one-liner                                      |
-| `contentWarnings` | list; optional                                                |
-| `routing`         | routing intent (the Director's taste); optional               |
+| `language`        | the run's language; the **author's choice per result**                                                                                                                 |
+| `reading`         | the directorial reading captured (what was moved); optional                                                                                                            |
+| `license`         | `CC-BY-NC-SA-4.0`                                                                                                                                                      |
+| `created`         | first-deposit date (git carries revisions after)                                                                                                                       |
+| `blurb`           | front-of-house one-liner                                                                                                                                               |
+| `contentWarnings` | list; optional                                                                                                                                                         |
+| `routing`         | routing intent (the Director's taste); optional                                                                                                                        |
 
 The body is the **captured run** in the chosen voice — the cast's performance as it
 played, run and staged by the Director — mechanics spent not shown, ending with the
