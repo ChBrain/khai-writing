@@ -114,6 +114,12 @@ npx khai-guard branch <topic>
 A management order (`management/orders/**`) is a rider. Never `--no-verify`. Never
 merge; open the PR and stop. Source (`writing/**`) and tests are separate PRs.
 
+Every PR carries a changeset (this archive is semver, not count-driven): a result
+add or fix ships a `patch`/`minor` changeset, so the deploy is steered through the
+**Version Packages** PR; a change that ships nothing (tooling, docs, the gates) ->
+an **empty** changeset (`npx changeset add --empty`). The `changeset-check` gate
+enforces it.
+
 ## Spend boundary
 
 The Archive's Roadie may `publish`/`patch`/`delete` only. `tip` (money out),
