@@ -114,11 +114,21 @@ npx khai-guard branch <topic>
 A management order (`management/orders/**`) is a rider. Never `--no-verify`. Never
 merge; open the PR and stop. Source (`writing/**`) and tests are separate PRs.
 
-Every PR carries a changeset (this archive is semver, not count-driven): a result
-add or fix ships a `patch`/`minor` changeset, so the deploy is steered through the
-**Version Packages** PR; a change that ships nothing (tooling, docs, the gates) ->
-an **empty** changeset (`npx changeset add --empty`). The `changeset-check` gate
-enforces it.
+The minor version IS the **writing count** (the number of deposited results),
+computed not chosen — the same rule the plays/cultures/misfits houses follow.
+`npm run registry:build` (run by the `version` script) sets the version to
+`0.<count>.0`, reconciling `package.json` and `registry.json`; the build is the
+single writer of the version, never hand-edit it. A fresh, empty archive stays
+`0.0.x`. Every PR carries a changeset, steered through the **Version Packages** PR:
+
+- **Adding a result** -> a `minor` changeset. `changeset version` bumps the minor
+  and the build reconciles it back to the result count (`0.<count>.0`). It **must**
+  be `minor`: a `patch` (or empty) changeset survives the reconcile (count ===
+  minor) and drifts the version to `0.<count>.1`, so `changeset-check` rejects it.
+- **A fix to an existing result** (ships package `files`) -> a `patch` changeset;
+  it ships at the same count (`0.<count>.1`).
+- **A change that ships nothing** (tooling, docs, the gates) -> an **empty**
+  changeset (`npx changeset add --empty`). The `changeset-check` gate enforces it.
 
 ## Spend boundary
 

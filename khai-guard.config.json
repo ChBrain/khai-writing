@@ -2,6 +2,9 @@
   "source": ["writing/**"],
   "test": ["tests/**", ".github/workflows/**", ".husky/**"],
   "exemptRenames": true,
+  "changesetPolicy": {
+    "countDrivenAdd": ["writing/*/*/*.md"]
+  },
   "licensePolicy": {
     "packages": ["package.json"],
     "packageLicenses": ["SEE LICENSE IN LICENSE and LICENSE-CODE"]
