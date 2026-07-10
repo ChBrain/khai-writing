@@ -21,12 +21,11 @@ import { dirname, join } from "node:path";
 import { collectResults } from "./writing.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 
 // Derive the version from the result count: preserve the major (the archive
 // stays 0.x) and, when the count already equals the minor, the changeset-driven
 // patch; otherwise move the minor to the count and reset the patch to 0.
-function deriveVersion(currentVersion, count) {
+export function deriveVersion(currentVersion, count) {
   const m = /^(\d+)\.(\d+)\.(\d+)/.exec(currentVersion ?? "");
   const major = m ? Number(m[1]) : 0;
   const curMinor = m ? Number(m[2]) : 0;
@@ -34,38 +33,52 @@ function deriveVersion(currentVersion, count) {
   return `${major}.${count}.${count === curMinor ? patch : 0}`;
 }
 
-// Surface the front-of-house metadata a consumer needs to render the catalogue
-// without opening every file; the body (the told story) stays in the file.
-const writing = collectResults(root).map(({ house, play, result, path, frontmatter: fm }) => ({
-  house,
-  play,
-  result,
-  path,
-  title: fm.title ?? null,
-  blurb: fm.blurb ?? null,
-  director: fm.director ?? null,
-  cast: fm.cast ?? null,
-  language: fm.language ?? null,
-  created: fm.created ?? null,
-  contentWarnings: Array.isArray(fm.contentWarnings) ? fm.contentWarnings : [],
-  routing: fm.routing ?? null,
-}));
+/**
+ * Compute the discovery index a fresh build would produce, writing nothing. The
+ * pure core shared by the build (which writes it) and the conformance drift test
+ * (which asserts the committed registry.json equals it), so the build stays the
+ * single writer of registry.json and a hand edit is caught rather than shipped.
+ * @param {string} at  the archive root (holds package.json and writing/)
+ * @returns {{ registry: object, version: string, pkg: object }}
+ */
+export function computeWritingRegistry(at) {
+  const pkg = JSON.parse(readFileSync(join(at, "package.json"), "utf8"));
 
-// Reconcile the version to the result count before stamping it into the index,
-// and write it back to package.json so the two stay in lockstep (the build is
-// the single writer of the number).
-const version = deriveVersion(pkg.version, writing.length);
-if (pkg.version !== version) {
-  pkg.version = version;
-  writeFileSync(join(root, "package.json"), JSON.stringify(pkg, null, 2) + "\n");
+  // Surface the front-of-house metadata a consumer needs to render the catalogue
+  // without opening every file; the body (the told story) stays in the file.
+  const writing = collectResults(at).map(({ house, play, result, path, frontmatter: fm }) => ({
+    house,
+    play,
+    result,
+    path,
+    title: fm.title ?? null,
+    blurb: fm.blurb ?? null,
+    director: fm.director ?? null,
+    cast: fm.cast ?? null,
+    language: fm.language ?? null,
+    created: fm.created ?? null,
+    contentWarnings: Array.isArray(fm.contentWarnings) ? fm.contentWarnings : [],
+    routing: fm.routing ?? null,
+  }));
+
+  const version = deriveVersion(pkg.version, writing.length);
+  const registry = {
+    $schema: "http://json-schema.org/draft-07/schema#",
+    name: pkg.name,
+    version,
+    writing,
+  };
+  return { registry, version, pkg };
 }
 
-const registry = {
-  $schema: "http://json-schema.org/draft-07/schema#",
-  name: pkg.name,
-  version,
-  writing,
-};
-
-writeFileSync(join(root, "registry.json"), JSON.stringify(registry, null, 2) + "\n");
-console.log(`registry.json: ${writing.length} result(s) at ${version}`);
+// Run as a script (cross-platform main check; a bare `file://` compare never
+// matches on Windows): write the index and reconcile package.json to the count.
+if (fileURLToPath(import.meta.url) === process.argv[1]) {
+  const { registry, version, pkg } = computeWritingRegistry(root);
+  if (pkg.version !== version) {
+    pkg.version = version;
+    writeFileSync(join(root, "package.json"), JSON.stringify(pkg, null, 2) + "\n");
+  }
+  writeFileSync(join(root, "registry.json"), JSON.stringify(registry, null, 2) + "\n");
+  console.log(`registry.json: ${registry.writing.length} result(s) at ${version}`);
+}
